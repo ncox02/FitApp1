@@ -1,0 +1,2975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0a">
+<title>4HB Operator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --surface2: #1a1a1a;
+  --surface3: #222222;
+  --border: #2a2a2a;
+  --accent: #c8ff00;
+  --accent2: #ff6b35;
+  --accent3: #00d4ff;
+  --text: #f0f0f0;
+  --text2: #888888;
+  --text3: #555555;
+  --red: #ff4444;
+  --green: #44ff88;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Bebas Neue', sans-serif;
+  --radius: 8px;
+  --transition: 0.18s ease;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ─── LAYOUT ─── */
+#app { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+#main-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 80px;
+}
+#nav-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-family: var(--sans);
+  font-size: 10px;
+  cursor: pointer;
+  transition: color var(--transition);
+}
+.nav-btn.active { color: var(--accent); }
+.nav-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+/* ─── HEADER ─── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-title {
+  font-family: var(--display);
+  font-size: 32px;
+  letter-spacing: 1px;
+  color: var(--text);
+}
+.page-subtitle {
+  font-size: 11px;
+  color: var(--text2);
+  font-family: var(--mono);
+  letter-spacing: 0.5px;
+}
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: var(--display);
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+.card-label {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ─── ACCENT CARD ─── */
+.card-accent {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-accent2 { border-color: var(--accent2); border-left-color: var(--accent2); }
+.card-accent3 { border-color: var(--accent3); border-left-color: var(--accent3); }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  border: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+}
+.btn-primary:active { transform: scale(0.97); }
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-danger { background: var(--red); color: #fff; }
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+.btn-full { width: 100%; }
+.btn-icon {
+  background: none;
+  border: none;
+  color: var(--text2);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition);
+}
+.btn-icon:active { color: var(--accent); }
+.btn-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+/* ─── FORMS ─── */
+.form-group { margin-bottom: 14px; }
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color var(--transition);
+  -webkit-appearance: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--accent);
+}
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-select option { background: var(--surface2); }
+
+/* ─── TOGGLE ─── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.toggle-info p { font-size: 11px; color: var(--text2); line-height: 1.4; }
+.toggle {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--surface3);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: var(--text2);
+  border-radius: 50%;
+  transition: all var(--transition);
+}
+.toggle input:checked + .toggle-slider { background: var(--accent); }
+.toggle input:checked + .toggle-slider::before {
+  transform: translateX(18px);
+  background: #000;
+}
+
+/* ─── STAT GRID ─── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.stat-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.stat-box {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+.stat-value {
+  font-family: var(--display);
+  font-size: 26px;
+  color: var(--accent);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 10px;
+  color: var(--text2);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* ─── BADGE ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--mono);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.badge-green { background: rgba(68,255,136,0.15); color: var(--green); }
+.badge-yellow { background: rgba(200,255,0,0.15); color: var(--accent); }
+.badge-orange { background: rgba(255,107,53,0.15); color: var(--accent2); }
+.badge-blue { background: rgba(0,212,255,0.15); color: var(--accent3); }
+.badge-red { background: rgba(255,68,68,0.15); color: var(--red); }
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar {
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+/* ─── SECTION DIVIDER ─── */
+.section-divider {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 12px 0 8px;
+}
+
+/* ─── WORKOUT ITEM ─── */
+.workout-step {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.workout-step:last-child { border-bottom: none; }
+.step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text2);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-num.active { background: var(--accent); color: #000; }
+.step-num.done { background: var(--green); color: #000; }
+.step-content h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.step-content p { font-size: 12px; color: var(--text2); }
+.step-content a { color: var(--accent3); font-size: 11px; text-decoration: none; }
+.step-meta { font-size: 11px; color: var(--accent); font-family: var(--mono); margin-top: 4px; }
+
+/* ─── LOG INPUT ─── */
+.log-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.log-row:last-child { border-bottom: none; }
+.log-label { font-size: 12px; font-weight: 500; flex: 1; min-width: 0; }
+.log-input {
+  width: 72px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 6px 8px;
+  text-align: center;
+  outline: none;
+  transition: border-color var(--transition);
+}
+.log-input:focus { border-color: var(--accent); }
+.log-unit { font-size: 11px; color: var(--text3); width: 28px; }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px 16px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  border-top: 1px solid var(--border);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+.modal-title {
+  font-family: var(--display);
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+/* ─── TIMER ─── */
+.timer-display {
+  font-family: var(--display);
+  font-size: 64px;
+  color: var(--accent);
+  text-align: center;
+  letter-spacing: 2px;
+  padding: 20px 0;
+  line-height: 1;
+}
+
+/* ─── CHART PLACEHOLDER ─── */
+.chart-area {
+  height: 120px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  padding: 8px;
+  gap: 3px;
+  overflow: hidden;
+}
+.chart-bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  min-height: 4px;
+  transition: height 0.3s ease;
+}
+
+/* ─── TABS ─── */
+.tab-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  background: var(--surface2);
+  padding: 4px;
+  border-radius: var(--radius);
+}
+.tab-btn {
+  flex: 1;
+  padding: 7px 8px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--text2);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+.tab-btn.active {
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* ─── PAGE ─── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ─── TODAY HERO ─── */
+.today-hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.today-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(200,255,0,0.08) 0%, transparent 70%);
+}
+.today-day {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.today-workout {
+  font-family: var(--display);
+  font-size: 28px;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.today-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--text2);
+  font-family: var(--mono);
+}
+.today-meta span { color: var(--accent2); }
+
+/* ─── SCROLLABLE CONTENT AREAS ─── */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar { display: none; }
+
+/* ─── SEPARATOR ─── */
+hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+
+/* ─── SMALL TEXT UTILS ─── */
+.mono { font-family: var(--mono); }
+.text-accent { color: var(--accent); }
+.text-accent2 { color: var(--accent2); }
+.text-accent3 { color: var(--accent3); }
+.text-muted { color: var(--text2); }
+.text-sm { font-size: 12px; }
+.text-xs { font-size: 11px; }
+.text-center { text-align: center; }
+.flex { display: flex; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.gap-8 { gap: 8px; }
+.gap-12 { gap: 12px; }
+.mb-4 { margin-bottom: 4px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-12 { margin-bottom: 12px; }
+.mb-16 { margin-bottom: 16px; }
+.mt-4 { margin-top: 4px; }
+.mt-8 { margin-top: 8px; }
+.mt-12 { margin-top: 12px; }
+.fw-600 { font-weight: 600; }
+
+/* ─── ACCORDION ─── */
+.accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.accordion-header h4 { font-size: 13px; font-weight: 600; }
+.accordion-header .chev {
+  width: 16px; height: 16px;
+  stroke: var(--text2);
+  fill: none;
+  stroke-width: 2;
+  transition: transform var(--transition);
+}
+.accordion-header.open .chev { transform: rotate(180deg); }
+.accordion-body { display: none; padding: 12px 0; }
+.accordion-body.open { display: block; }
+
+/* ─── SCROLLABLE PILL ROW ─── */
+.pill-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
+.pill-row::-webkit-scrollbar { display: none; }
+.pill {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: var(--mono);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition);
+}
+.pill.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+/* ─── LIST ITEM ─── */
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.list-item:last-child { border-bottom: none; }
+.list-item-info { flex: 1; min-width: 0; }
+.list-item-info h4 { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.list-item-info p { font-size: 11px; color: var(--text2); }
+.list-item-meta { font-size: 11px; color: var(--text2); font-family: var(--mono); text-align: right; flex-shrink: 0; }
+
+/* Loading indicator */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Meal compliance dot */
+.compliance-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.compliance-dot.green { background: var(--green); }
+.compliance-dot.red { background: var(--red); }
+.compliance-dot.yellow { background: var(--accent); }
+
+/* Flash animation for saved state */
+@keyframes flash { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.flashing { animation: flash 0.4s ease; }
+
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="main-content"></div>
+  <nav id="nav-bar">
+    <button class="nav-btn active" data-page="today" onclick="navigate('today')">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Today
+    </button>
+    <button class="nav-btn" data-page="log" onclick="navigate('log')">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Log
+    </button>
+    <button class="nav-btn" data-page="nutrition" onclick="navigate('nutrition')">
+      <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      Nutrition
+    </button>
+    <button class="nav-btn" data-page="progress" onclick="navigate('progress')">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Progress
+    </button>
+    <button class="nav-btn" data-page="settings" onclick="navigate('settings')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </button>
+  </nav>
+</div>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA STORE
+// ═══════════════════════════════════════════════════════════════
+const DB_KEY = '4hb_app_v1';
+
+const DEFAULT_SETTINGS = {
+  // Profile
+  name: '',
+  bodyweight: 0,
+  heightIn: 70,
+  bodyFatPct: 20,
+  
+  // Training days (0=Sun, 1=Mon, ... 6=Sat)
+  trainingDays: [1, 2, 4, 5, 6], // Mon,Tue,Thu,Fri,Sat
+  includeSunday: false,
+  
+  // Components
+  useStrength: true,
+  useRunning: true,
+  useCore: true,
+  usePosterior: true,
+  useMobility: true,
+  useNutrition: true,
+  
+  // Strength (Geek to Freak)
+  strengthProgram: 'g2f', // g2f | custom
+  g2fCurrentWeek: 1,
+  g2fTestDone: false,
+  
+  // Running
+  runningPlan: 'maf', // maf | basic
+  runningHrZone: 180, // 180 minus age = MAF
+  age: 35,
+  runningProgressionType: 'distance', // distance | time
+  runningStartDistance: 3, // miles
+  runningProgressionPct: 10, // 10% per week
+  runningDaysPerWeek: 3,
+  
+  // Core
+  coreProgram: 'ferriss', // ferriss | custom
+  coreCustom: '',
+  
+  // Posterior
+  posteriorProgram: 'ferriss', // ferriss | custom
+  posteriorCustom: '',
+  
+  // Mobility
+  mobilityAreas: ['shoulders', 'hips', 'wrists'],
+  
+  // Nutrition
+  nutritionPlan: 'slowcarb', // slowcarb | g2f | custom
+  calorieGoal: 2200,
+  proteinGoal: 180,
+  autoCalc: true,
+  cheatDay: 6, // Saturday
+  
+  // Supplements
+  supPolicosanol: false,
+  supALA: false,
+  supGarlic: false,
+  supGlutamine: false,
+  supCreatine: false,
+  supCissus: false,
+  supCashews: false,
+  supAirSquats: false,
+  
+  // Notifications
+  morningReminder: '07:00',
+  eveningReminder: '20:00',
+};
+
+const DEFAULT_STATE = {
+  settings: { ...DEFAULT_SETTINGS },
+  workouts: [], // {date, type, data, completed, notes}
+  measurements: [], // {date, weight, neck, chest, waist, hips, rightArm, leftArm, rightThigh, leftThigh, rightCalf, leftCalf, bodyFat, notes}
+  nutrition_log: [], // {date, meals, water, calories, protein, compliant}
+  ingredients: [], // {id, name, store, unitPrice, servings, protein, carbs, sugars, fiber, fat, satFat, sodium, servingUnit, servingSize}
+  meals: [], // {id, name, ingredients: [{ingredientId, servings}], notes}
+  meal_plan: {}, // {YYYY-MM-DD: {breakfast: mealId, lunch: mealId, dinner: mealId, snacks: [mealId]}}
+  running_log: [], // {date, type, distance, duration, avgHR, notes}
+  sleep_log: [], // {date, hours, quality}
+  weekly_plan: [], // generated workout schedule
+  currentWeek: null,
+  onboarded: false,
+};
+
+let db = loadDB();
+
+function loadDB() {
+  try {
+    const raw = localStorage.getItem(DB_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      // Merge with defaults for new fields
+      return {
+        ...DEFAULT_STATE,
+        ...parsed,
+        settings: { ...DEFAULT_SETTINGS, ...parsed.settings }
+      };
+    }
+  } catch(e) { console.error('DB load error', e); }
+  return { ...DEFAULT_STATE, settings: { ...DEFAULT_SETTINGS } };
+}
+
+function saveDB() {
+  try {
+    localStorage.setItem(DB_KEY, JSON.stringify(db));
+  } catch(e) { console.error('DB save error', e); }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DATE HELPERS
+// ═══════════════════════════════════════════════════════════════
+function today() { return new Date().toISOString().split('T')[0]; }
+function todayDate() { return new Date(); }
+function formatDate(d) {
+  const date = new Date(d + 'T00:00:00');
+  return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+function getDayName(d) {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  return days[new Date(d + 'T00:00:00').getDay()];
+}
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split('T')[0];
+}
+function getWeekStart(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const day = d.getDay();
+  d.setDate(d.getDate() - day);
+  return d.toISOString().split('T')[0];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROGRAM DATA (Ferriss protocols)
+// ═══════════════════════════════════════════════════════════════
+const G2F = {
+  name: 'Geek to Freak',
+  description: 'Tim Ferriss hypertrophy protocol from The 4-Hour Body. 1 set to failure of 5 exercises, 2x/week with 3-5 day rest between.',
+  frequency: 'twice_weekly', // Mon/Thu or similar
+  sets: 1,
+  repTarget: 'failure',
+  cadence: '5/5', // 5 sec up, 5 sec down
+  restBetweenExercises: 180, // seconds
+  exercises: [
+    {
+      name: 'Yates Row (Underhand Barbell)',
+      muscle: 'Back',
+      notes: 'Bent-over row with underhand grip. Elbows to sides. Keep back slightly arched.',
+      video: 'https://www.youtube.com/results?search_query=yates+row+4+hour+body',
+      startWeight: { male: 95, female: 45 },
+      increment: 5,
+    },
+    {
+      name: 'Overhead Press (Barbell)',
+      muscle: 'Shoulders',
+      notes: 'Military press, seated or standing. Full extension overhead.',
+      video: 'https://www.youtube.com/results?search_query=overhead+press+form',
+      startWeight: { male: 65, female: 35 },
+      increment: 5,
+    },
+    {
+      name: 'Chest-Supported Incline Press',
+      muscle: 'Chest',
+      notes: 'Use an incline bench. Dumbbell or barbell. Keep back against pad.',
+      video: 'https://www.youtube.com/results?search_query=chest+supported+incline+press',
+      startWeight: { male: 45, female: 25 },
+      increment: 5,
+    },
+    {
+      name: 'Leg Press',
+      muscle: 'Legs',
+      notes: 'Full range of motion. Feet shoulder-width on platform. Slow cadence.',
+      video: 'https://www.youtube.com/results?search_query=leg+press+form',
+      startWeight: { male: 150, female: 90 },
+      increment: 10,
+    },
+    {
+      name: 'Stationary Bike (10 min)',
+      muscle: 'Warm-up / Finisher',
+      notes: 'Low resistance. Just to warm up or finish. Not counted in main sets.',
+      video: null,
+      startWeight: null,
+      increment: 0,
+    },
+  ],
+  progression: {
+    rule: 'If you reach 10+ reps, increase weight next session by increment. If you fail before 5 reps, reduce weight by 10%.',
+    testDay: 'On day 1, find your starting weight: use a weight where you fail between 5-10 reps with 5/5 cadence.',
+  },
+  measurements: ['weight', 'neck', 'chest', 'waist', 'hips', 'rightArm', 'leftArm', 'rightThigh', 'leftThigh', 'rightCalf', 'leftCalf'],
+  caloricTarget: (bw) => Math.round(bw * 24 * 1.1),
+  proteinTarget: (bw) => Math.round(bw * 1.25),
+};
+
+const FERRISS_CORE = {
+  name: '6-Minute Abs (Ferriss)',
+  description: 'Three exercises targeting the core per Ferriss recommendations: Myotatic Crunch, Cat Vomit, and Side Plank.',
+  duration: 6, // minutes
+  exercises: [
+    {
+      name: 'Myotatic Crunch',
+      sets: 1,
+      reps: 'failure (~10-15)',
+      notes: 'Lie on an exercise ball (or edge of couch). Arms overhead. Extend fully down, crunch slowly to full contraction. 4 sec down, 2 sec up.',
+      video: 'https://www.youtube.com/results?search_query=myotatic+crunch+tim+ferriss',
+    },
+    {
+      name: 'Cat Vomit (Ab Vacuum)',
+      sets: 3,
+      reps: '8-12 exhales',
+      notes: 'On hands and knees. Exhale all air, pull navel to spine, hold 10 sec. Release. This contracts transverse abdominals.',
+      video: 'https://www.youtube.com/results?search_query=cat+vomit+exercise+tim+ferriss',
+    },
+    {
+      name: 'Side Plank',
+      sets: 2,
+      reps: '30-60 sec each side',
+      notes: 'Full side plank. Keep hips up. Can be modified on knees. Works obliques and stabilizers.',
+      video: 'https://www.youtube.com/results?search_query=side+plank+form',
+    },
+  ],
+};
+
+const FERRISS_POSTERIOR = {
+  name: '75 Kettlebell Swings',
+  description: '75 kettlebell swings for posterior chain (glutes, hamstrings, lower back). Done 2x/week.',
+  sets: '5 sets of 15',
+  reps: 75,
+  notes: 'Use a weight that is challenging but allows full hip extension. Drive hips forward, not a squat. Keep back flat. Rest 60 sec between sets.',
+  video: 'https://www.youtube.com/results?search_query=kettlebell+swing+proper+form',
+  weight: { male: 35, female: 18 }, // lbs (approx)
+  duration: 15, // minutes
+};
+
+const MOBILITY = {
+  shoulders: {
+    name: 'Shoulder Mobility',
+    exercises: [
+      { name: 'Shoulder Circles', duration: '30 sec each direction', notes: 'Arms at sides, make large circles forward and backward.' },
+      { name: 'Doorway Stretch', duration: '30 sec each arm', notes: 'Arm at 90°, press forearm into doorway, lean forward gently.' },
+      { name: 'Band Pull-Apart (or towel)', duration: '2x15 reps', notes: 'Hands shoulder-width, pull band/towel apart to chest. Squeeze shoulder blades.' },
+      { name: 'Chest Opener', duration: '60 sec', notes: 'Clasp hands behind back, lift arms, open chest. Hold.' },
+    ],
+  },
+  hips: {
+    name: 'Hip Mobility',
+    exercises: [
+      { name: 'Hip Circles', duration: '30 sec each direction', notes: 'Standing, hands on hips. Large hip circles.' },
+      { name: '90/90 Hip Stretch', duration: '60 sec each side', notes: 'Sit on floor, both legs at 90°. Lean over front shin. Switch sides.' },
+      { name: 'Deep Squat Hold', duration: '60-120 sec', notes: 'Feet shoulder-width, toes out slightly. Hold bottom of squat. Use doorframe if needed.' },
+      { name: 'Pigeon Pose', duration: '60 sec each side', notes: 'Front leg bent, back leg extended. Lean forward over front hip.' },
+    ],
+  },
+  wrists: {
+    name: 'Wrist Mobility',
+    exercises: [
+      { name: 'Wrist Circles', duration: '30 sec each direction', notes: 'Interlace fingers, rotate both wrists.' },
+      { name: 'Prayer Stretch', duration: '30 sec', notes: 'Press palms together in front of chest, elbows out. Push down to stretch flexors.' },
+      { name: 'Reverse Prayer', duration: '30 sec', notes: 'Backs of hands pressed together, elbows out. Stretch extensors.' },
+      { name: 'Wrist Push-Up Rocking', duration: '30 sec', notes: 'On all fours, rock forward and back with weight on palms.' },
+    ],
+  },
+};
+
+const SLOW_CARB = {
+  name: 'Slow-Carb Diet',
+  description: 'Ferriss slow-carb protocol. Eat the same 4-5 meals repeatedly. Avoid white carbs (bread, rice, pasta, potatoes), dairy, and fruit. Allow one cheat day/week.',
+  rules: [
+    'Eat the same few meals repeatedly.',
+    'Avoid white carbs: bread, rice, pasta, potatoes, cereal.',
+    'Avoid dairy (except cottage cheese sometimes).',
+    'Avoid fruit (fructose converts to glycerol phosphate).',
+    'Do NOT drink calories (no juice, soda, milk).',
+    'Take one cheat day per week to prevent adaptation.',
+    'Eat within 30 min of waking.',
+    'Eat beans/legumes at every meal.',
+  ],
+  allowedFoods: ['Eggs', 'Chicken breast', 'Fish', 'Beef', 'Pork', 'Black beans', 'Lentils', 'Pinto beans', 'Spinach', 'Kale', 'Broccoli', 'Cauliflower', 'Asparagus', 'Green beans', 'Mixed vegetables'],
+  cheatDayTips: 'Eat 30g protein within 30 min of waking on cheat day. Take ALA, policosanol, and green tea before big meals. Do 90-sec air squats and wall pushups before and after.',
+};
+
+// ═══════════════════════════════════════════════════════════════
+// SCHEDULING ENGINE
+// ═══════════════════════════════════════════════════════════════
+function generateWeeklySchedule(weekStart) {
+  const s = db.settings;
+  const days = [];
+  
+  for (let i = 0; i < 7; i++) {
+    const dateStr = addDays(weekStart, i);
+    const dayOfWeek = new Date(dateStr + 'T00:00:00').getDay();
+    
+    if (!s.trainingDays.includes(dayOfWeek)) {
+      days.push({ date: dateStr, type: 'rest', label: 'Rest Day', duration: 0, components: [] });
+      continue;
+    }
+    
+    const components = [];
+    let label = '';
+    let duration = 0;
+    
+    // Strength: 2x/week, Mon+Thu style
+    const strengthDays = s.trainingDays.slice(0, 2);
+    const isStrengthDay = s.useStrength && strengthDays.includes(dayOfWeek);
+    
+    // Running: 3x/week, spread through training days
+    const runDaysAvail = s.trainingDays.filter(d => !strengthDays.includes(d));
+    const runDays = s.useRunning ? runDaysAvail.slice(0, Math.min(3, runDaysAvail.length)) : [];
+    const isRunDay = runDays.includes(dayOfWeek);
+    
+    // Determine run type for this day
+    let runType = 'easy';
+    const runDayIndex = runDays.indexOf(dayOfWeek);
+    if (runDayIndex === 1) runType = 'easy2'; // second easy run
+    if (runDayIndex === 2) runType = 'intervals'; // interval run
+    
+    if (isStrengthDay) {
+      components.push('strength');
+      duration += 45;
+      label = 'Strength';
+    }
+    if (isRunDay) {
+      components.push('running');
+      duration += runType === 'intervals' ? 30 : 50;
+      label = label ? label + ' + Run' : 'Run';
+    }
+    if (s.useCore && (isStrengthDay || (isRunDay && runType === 'easy'))) {
+      components.push('core');
+      duration += 8;
+      if (isStrengthDay) label += ' + Core';
+    }
+    if (s.usePosterior && isStrengthDay) {
+      components.push('posterior');
+      duration += 15;
+      label += ' + Swings';
+    }
+    if (s.useMobility) {
+      // Add mobility to non-strength, non-run days, or as a warm-up
+      const isExtraDay = !isStrengthDay && !isRunDay;
+      if (isExtraDay || (isRunDay && !isStrengthDay)) {
+        components.push('mobility');
+        duration += 10;
+        if (!label) label = 'Mobility';
+      }
+    }
+    
+    if (!label) { label = 'Active Recovery'; }
+    
+    days.push({ date: dateStr, type: 'training', label, duration, components, runType: isRunDay ? runType : null });
+  }
+  
+  return days;
+}
+
+function getTodaySchedule() {
+  const t = today();
+  const weekStart = getWeekStart(t);
+  if (!db.weekly_plan || db.currentWeek !== weekStart) {
+    db.weekly_plan = generateWeeklySchedule(weekStart);
+    db.currentWeek = weekStart;
+    saveDB();
+  }
+  return db.weekly_plan.find(d => d.date === t) || { type: 'rest', label: 'Rest Day', components: [], duration: 0 };
+}
+
+function getWeekSchedule() {
+  const t = today();
+  const weekStart = getWeekStart(t);
+  if (!db.weekly_plan || db.currentWeek !== weekStart) {
+    db.weekly_plan = generateWeeklySchedule(weekStart);
+    db.currentWeek = weekStart;
+    saveDB();
+  }
+  return db.weekly_plan;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PROGRESSION ENGINE
+// ═══════════════════════════════════════════════════════════════
+function getExerciseData(exerciseName) {
+  const logs = db.workouts.filter(w => w.type === 'strength' && w.data && w.data.find(e => e.name === exerciseName));
+  if (!logs.length) return null;
+  return logs[logs.length - 1].data.find(e => e.name === exerciseName);
+}
+
+function getNextWeight(exerciseName, exerciseDef) {
+  const last = getExerciseData(exerciseName);
+  if (!last) {
+    // Check if test day was done
+    if (!db.settings.g2fTestDone) {
+      return `TEST DAY — find starting weight`;
+    }
+    return `${exerciseDef.startWeight.male}`;
+  }
+  const reps = parseInt(last.reps) || 0;
+  const weight = parseFloat(last.weight) || 0;
+  if (reps >= 10) {
+    return `${weight + exerciseDef.increment} lbs (+${exerciseDef.increment})`;
+  } else if (reps < 5) {
+    return `${Math.round(weight * 0.9)} lbs (deload -10%)`;
+  }
+  return `${weight} lbs (maintain)`;
+}
+
+function getCurrentRunDistance() {
+  const logs = db.running_log.filter(r => r.type === 'easy' || r.type === 'easy2');
+  if (!logs.length) return db.settings.runningStartDistance;
+  const lastWeekLogs = logs.slice(-3);
+  const avgDist = lastWeekLogs.reduce((a, b) => a + (b.distance || 0), 0) / lastWeekLogs.length;
+  return Math.round(avgDist * (1 + db.settings.runningProgressionPct / 100) * 10) / 10;
+}
+
+function getMAFHR() {
+  const age = db.settings.age || 35;
+  return 180 - age;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NUTRITION HELPERS
+// ═══════════════════════════════════════════════════════════════
+function calcAutoNutrition() {
+  const bw = db.settings.bodyweight || 180;
+  if (db.settings.nutritionPlan === 'g2f') {
+    return {
+      calories: G2F.caloricTarget(bw),
+      protein: G2F.proteinTarget(bw),
+    };
+  }
+  // Slow-carb: ~1g protein per lb, 500 cal deficit (or maintenance for bulking)
+  return {
+    calories: Math.round(bw * 15),
+    protein: Math.round(bw * 1.0),
+  };
+}
+
+function getTodayNutritionLog() {
+  return db.nutrition_log.find(n => n.date === today());
+}
+
+function getOrCreateTodayNutrition() {
+  let log = db.nutrition_log.find(n => n.date === today());
+  if (!log) {
+    log = { date: today(), meals: [], water: 0, calories: 0, protein: 0, compliant: true, notes: '' };
+    db.nutrition_log.push(log);
+  }
+  return log;
+}
+
+function getMealById(id) {
+  return db.meals.find(m => m.id === id);
+}
+
+function calcMealMacros(meal) {
+  if (!meal || !meal.ingredients) return { calories: 0, protein: 0, carbs: 0, fat: 0 };
+  return meal.ingredients.reduce((acc, mi) => {
+    const ing = db.ingredients.find(i => i.id === mi.ingredientId);
+    if (!ing) return acc;
+    const mult = (mi.servings || 1);
+    acc.calories += Math.round(((ing.protein * 4) + (ing.carbs * 4) + (ing.fat * 9)) * mult);
+    acc.protein += Math.round((ing.protein || 0) * mult);
+    acc.carbs += Math.round((ing.carbs || 0) * mult);
+    acc.fat += Math.round((ing.fat || 0) * mult);
+    return acc;
+  }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MEASUREMENTS
+// ═══════════════════════════════════════════════════════════════
+function getLatestMeasurements() {
+  if (!db.measurements.length) return null;
+  return db.measurements[db.measurements.length - 1];
+}
+
+function calcTotalInches(m) {
+  if (!m) return 0;
+  return [m.neck, m.chest, m.waist, m.hips, m.rightArm, m.leftArm, m.rightThigh, m.leftThigh, m.rightCalf, m.leftCalf]
+    .filter(Boolean).reduce((a,b) => a + parseFloat(b || 0), 0);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER HELPERS
+// ═══════════════════════════════════════════════════════════════
+function renderWorkoutComponent(component, dayData) {
+  if (component === 'strength') return renderStrengthWorkout();
+  if (component === 'running') return renderRunningWorkout(dayData);
+  if (component === 'core') return renderCoreWorkout();
+  if (component === 'posterior') return renderPosteriorWorkout();
+  if (component === 'mobility') return renderMobilityWorkout();
+  return '';
+}
+
+function renderStrengthWorkout() {
+  const s = db.settings;
+  const isTestDay = !s.g2fTestDone;
+  let html = `<div class="card-accent mb-12">
+    <div class="card-header mb-8">
+      <div>
+        <div class="card-title">Strength — Geek to Freak</div>
+        <div class="text-xs text-muted mono">${isTestDay ? 'TEST DAY — find starting weights' : 'Week ' + (s.g2fCurrentWeek || 1) + ' • 1 set to failure • 5/5 cadence'}</div>
+      </div>
+      <span class="badge badge-yellow">~45 min</span>
+    </div>`;
+  
+  if (isTestDay) {
+    html += `<div class="text-sm text-muted mb-12">Today is your TEST DAY. For each exercise, find the weight where you reach failure between 5-10 reps using a 5-second up / 5-second down cadence. Record the weight and reps. This becomes your starting point.</div>`;
+  } else {
+    html += `<div class="text-sm text-muted mb-12">1 set per exercise to absolute failure. 5 sec up, 5 sec down. 3 min rest between exercises. Rest 3-5 DAYS before next session.</div>`;
+  }
+
+  html += `<div>`;
+  G2F.exercises.forEach((ex, i) => {
+    const nextW = isTestDay ? 'Test weight' : getNextWeight(ex.name, ex);
+    html += `<div class="workout-step">
+      <div class="step-num">${i + 1}</div>
+      <div class="step-content" style="flex:1">
+        <div class="flex-between">
+          <h4>${ex.name}</h4>
+          <span class="badge badge-orange mono">${nextW}</span>
+        </div>
+        <p>${ex.muscle} — ${ex.notes}</p>
+        ${ex.video ? `<a href="${ex.video}" target="_blank">▶ Watch form video →</a>` : ''}
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  html += `<button class="btn btn-primary btn-full mt-12" onclick="openLogStrengthModal()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Log Strength Session
+  </button>`;
+  html += `</div>`;
+  return html;
+}
+
+function renderRunningWorkout(dayData) {
+  const runType = dayData.runType || 'easy';
+  const mafHR = getMAFHR();
+  const distance = getCurrentRunDistance();
+  let html = `<div class="card-accent card-accent2 mb-12">
+    <div class="card-header mb-8">
+      <div>
+        <div class="card-title">${runType === 'intervals' ? 'Interval Run' : 'Easy Aerobic Run'}</div>
+        <div class="text-xs text-muted mono">${runType === 'intervals' ? 'High intensity intervals' : `MAF HR ≤${mafHR} bpm • ${distance} miles`}</div>
+      </div>
+      <span class="badge badge-orange">${runType === 'intervals' ? '~30 min' : '~50 min'}</span>
+    </div>`;
+  
+  if (runType === 'intervals') {
+    html += `<div class="workout-step">
+      <div class="step-num">1</div>
+      <div class="step-content" style="flex:1">
+        <h4>Warm-Up</h4>
+        <p>10 min easy jog at MAF HR (≤${mafHR} bpm)</p>
+      </div>
+    </div>
+    <div class="workout-step">
+      <div class="step-num">2</div>
+      <div class="step-content" style="flex:1">
+        <h4>Intervals</h4>
+        <p>6 × 400m hard / 400m easy recovery. Target: maximum sustainable effort on hard intervals.</p>
+      </div>
+    </div>
+    <div class="workout-step">
+      <div class="step-num">3</div>
+      <div class="step-content" style="flex:1">
+        <h4>Cool-Down</h4>
+        <p>5-10 min easy walk/jog</p>
+      </div>
+    </div>`;
+  } else {
+    html += `<div class="workout-step">
+      <div class="step-num">1</div>
+      <div class="step-content" style="flex:1">
+        <h4>Low-HR Aerobic Run</h4>
+        <p>Keep HR at or below ${mafHR} bpm (MAF: 180 minus age). If HR rises above, slow to a walk. <strong>${distance} miles target</strong>.</p>
+        <p class="mt-4 text-xs text-muted">MAF Method builds your aerobic base without stress. Progression: +10% weekly.</p>
+      </div>
+    </div>`;
+  }
+  
+  html += `<button class="btn btn-primary btn-full mt-12" onclick="openLogRunModal()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Log Run
+  </button></div>`;
+  return html;
+}
+
+function renderCoreWorkout() {
+  let html = `<div class="card-accent card-accent3 mb-12">
+    <div class="card-header mb-8">
+      <div>
+        <div class="card-title">Core — 6-Minute Abs</div>
+        <div class="text-xs text-muted mono">Tim Ferriss protocol • 3 exercises</div>
+      </div>
+      <span class="badge badge-blue">~8 min</span>
+    </div>`;
+  FERRISS_CORE.exercises.forEach((ex, i) => {
+    html += `<div class="workout-step">
+      <div class="step-num">${i + 1}</div>
+      <div class="step-content" style="flex:1">
+        <h4>${ex.name}</h4>
+        <p>${ex.sets} set${ex.sets > 1 ? 's' : ''} × ${ex.reps}</p>
+        <p class="text-xs text-muted mt-4">${ex.notes}</p>
+        <a href="${ex.video}" target="_blank" class="text-xs">▶ Watch form video →</a>
+      </div>
+    </div>`;
+  });
+  html += `<button class="btn btn-secondary btn-sm btn-full mt-12" onclick="markComponentDone('core')">Mark Core Done</button></div>`;
+  return html;
+}
+
+function renderPosteriorWorkout() {
+  const w = FERRISS_POSTERIOR;
+  return `<div class="card-accent card-accent2 mb-12">
+    <div class="card-header mb-8">
+      <div>
+        <div class="card-title">Posterior Chain — KB Swings</div>
+        <div class="text-xs text-muted mono">75 swings total • 5×15</div>
+      </div>
+      <span class="badge badge-orange">~15 min</span>
+    </div>
+    <div class="workout-step">
+      <div class="step-num">1</div>
+      <div class="step-content" style="flex:1">
+        <h4>75 Kettlebell Swings</h4>
+        <p>${w.sets} • Start weight: ${w.weight.male} lbs</p>
+        <p class="text-xs text-muted mt-4">${w.notes}</p>
+        <a href="${w.video}" target="_blank" class="text-xs">▶ Watch form video →</a>
+      </div>
+    </div>
+    <button class="btn btn-secondary btn-sm btn-full mt-12" onclick="openLogSwingsModal()">Log Swings</button>
+  </div>`;
+}
+
+function renderMobilityWorkout() {
+  const areas = db.settings.mobilityAreas || ['shoulders', 'hips', 'wrists'];
+  let html = `<div class="card mb-12">
+    <div class="card-header mb-8">
+      <div>
+        <div class="card-title">Mobility</div>
+        <div class="text-xs text-muted mono">${areas.map(a => a.charAt(0).toUpperCase() + a.slice(1)).join(', ')}</div>
+      </div>
+      <span class="badge badge-blue">~10 min</span>
+    </div>`;
+  areas.forEach(area => {
+    const mob = MOBILITY[area];
+    if (!mob) return;
+    html += `<div class="section-divider">${mob.name}</div>`;
+    mob.exercises.forEach(ex => {
+      html += `<div class="workout-step">
+        <div class="step-num" style="background:var(--accent3);color:#000;font-size:10px;">GO</div>
+        <div class="step-content" style="flex:1">
+          <h4>${ex.name}</h4>
+          <p>${ex.duration} — ${ex.notes}</p>
+        </div>
+      </div>`;
+    });
+  });
+  html += `<button class="btn btn-secondary btn-sm btn-full mt-12" onclick="markComponentDone('mobility')">Mark Mobility Done</button></div>`;
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PAGE: TODAY
+// ═══════════════════════════════════════════════════════════════
+function renderToday() {
+  const dayData = getTodaySchedule();
+  const t = today();
+  const latestM = getLatestMeasurements();
+  const nutrition = getTodayNutritionLog();
+  const autoNutrition = calcAutoNutrition();
+  const isRestDay = dayData.type === 'rest';
+  const isCheatDay = new Date(t + 'T00:00:00').getDay() === db.settings.cheatDay;
+
+  let html = ``;
+  
+  // Hero
+  html += `<div class="today-hero">
+    <div class="today-day">${formatDate(t)}</div>
+    <div class="today-workout">${dayData.label}</div>
+    <div class="today-meta">
+      ${!isRestDay ? `<div>⏱ ~${dayData.duration} min</div>` : ''}
+      ${isCheatDay ? '<div><span>🍕 CHEAT DAY</span></div>' : ''}
+      ${isRestDay ? '<div>Recovery • Stay active, stretch</div>' : ''}
+    </div>
+  </div>`;
+
+  // Quick stats
+  html += `<div class="stat-grid mb-12">
+    <div class="stat-box">
+      <div class="stat-value">${db.settings.bodyweight || '—'}</div>
+      <div class="stat-label">Body Weight (lbs)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" style="color:var(--accent2)">${nutrition ? nutrition.protein : '—'}</div>
+      <div class="stat-label">Protein Today (g)</div>
+    </div>
+  </div>`;
+
+  // Nutrition quick log
+  html += `<div class="card mb-12">
+    <div class="card-header mb-8">
+      <div class="card-title">Today's Nutrition</div>
+      ${isCheatDay ? '<span class="badge badge-orange">CHEAT DAY</span>' : ''}
+    </div>
+    <div class="flex-between mb-8">
+      <div class="text-sm text-muted">Goal: ${autoNutrition.calories} cal / ${autoNutrition.protein}g protein</div>
+      ${nutrition ? `<div class="text-sm text-accent">${nutrition.calories}cal / ${nutrition.protein}g</div>` : '<div class="text-sm text-muted">Not logged</div>'}
+    </div>
+    ${isCheatDay ? `<div class="text-xs text-muted mb-8">${SLOW_CARB.cheatDayTips}</div>` : ''}
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary btn-sm" style="flex:1" onclick="openLogWeightModal()">Log Weight</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1" onclick="openLogMealModal()">Log Meal</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1" onclick="openLogWaterModal()">
+        💧 ${nutrition ? nutrition.water : 0}oz
+      </button>
+    </div>
+  </div>`;
+
+  // Workout content
+  if (!isRestDay && dayData.components.length > 0) {
+    html += `<div class="section-divider">TODAY'S WORKOUT</div>`;
+    dayData.components.forEach(c => {
+      html += renderWorkoutComponent(c, dayData);
+    });
+  } else if (isRestDay) {
+    html += `<div class="card text-center" style="padding:24px">
+      <div style="font-size:32px;margin-bottom:8px">🌿</div>
+      <div class="card-title mb-4">Rest & Recover</div>
+      <div class="text-sm text-muted">Light walking, stretching, and hydration are great today. Your body grows during recovery.</div>
+      <button class="btn btn-secondary btn-sm mt-12" onclick="openLogMeasurementsModal()">Take Measurements</button>
+    </div>`;
+  }
+
+  // Sleep log
+  html += `<div class="card mt-4">
+    <div class="flex-between">
+      <div class="card-title">Sleep</div>
+      <button class="btn btn-secondary btn-sm" onclick="openLogSleepModal()">Log Sleep</button>
+    </div>
+    ${db.sleep_log.length ? (() => {
+      const sl = db.sleep_log[db.sleep_log.length - 1];
+      return `<div class="text-sm text-muted mt-8">Last: <span class="text-accent">${sl.hours}h</span> — ${sl.date}</div>`;
+    })() : '<div class="text-sm text-muted mt-8">No sleep logged yet</div>'}
+  </div>`;
+
+  // Supplements
+  const activeSupps = Object.entries({
+    supPolicosanol: 'Policosanol',
+    supALA: 'ALA',
+    supGarlic: 'Garlic Extract',
+    supGlutamine: 'L-Glutamine',
+    supCreatine: 'Creatine',
+    supCissus: 'Cissus QR',
+    supCashews: '4 cashews before meals',
+    supAirSquats: '90-sec air squats before/after eating',
+  }).filter(([k]) => db.settings[k]);
+
+  if (activeSupps.length) {
+    html += `<div class="card mt-4">
+      <div class="card-title mb-8">Today's Protocol</div>`;
+    activeSupps.forEach(([,name]) => {
+      html += `<div class="toggle-row">
+        <div class="toggle-info"><h4>${name}</h4></div>
+        <input type="checkbox" style="width:18px;height:18px;accent-color:var(--accent)">
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // This week preview
+  const weekSchedule = getWeekSchedule();
+  html += `<div class="section-divider">THIS WEEK</div>
+  <div class="card">`;
+  weekSchedule.forEach(d => {
+    const isToday = d.date === t;
+    html += `<div class="list-item" style="${isToday ? 'background:rgba(200,255,0,0.04);margin:-0 -16px;padding:10px 16px;' : ''}">
+      <div style="width:32px;flex-shrink:0;text-align:center">
+        <div class="text-xs mono text-muted">${getDayName(d.date)}</div>
+        <div class="text-sm fw-600 ${isToday ? 'text-accent' : ''}">${d.date.split('-')[2]}</div>
+      </div>
+      <div class="list-item-info">
+        <h4 style="${isToday ? 'color:var(--accent)' : ''}">${d.label}</h4>
+        <p>${d.components.join(', ') || 'rest'}</p>
+      </div>
+      <div class="list-item-meta">${d.duration ? d.duration + 'm' : ''}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PAGE: LOG (HISTORY)
+// ═══════════════════════════════════════════════════════════════
+function renderLog() {
+  const allWorkouts = [...db.workouts, ...db.running_log].sort((a,b) => b.date.localeCompare(a.date));
+  
+  let html = `<div class="page-header">
+    <div>
+      <div class="page-title">Log</div>
+      <div class="page-subtitle">TRAINING HISTORY</div>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="openQuickLogModal()">+ Entry</button>
+  </div>`;
+
+  // Measurements summary
+  const latest = getLatestMeasurements();
+  if (latest) {
+    const ti = calcTotalInches(latest);
+    html += `<div class="card mb-12">
+      <div class="card-title mb-8">Latest Measurements</div>
+      <div class="stat-grid stat-grid-3">
+        <div class="stat-box">
+          <div class="stat-value">${latest.weight || '—'}</div>
+          <div class="stat-label">Weight</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--accent2)">${ti.toFixed(1)}</div>
+          <div class="stat-label">Total Inches</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--accent3)">${latest.bodyFat || '—'}%</div>
+          <div class="stat-label">Body Fat</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm btn-full mt-8" onclick="openLogMeasurementsModal()">Update Measurements</button>
+    </div>`;
+  } else {
+    html += `<div class="card mb-12 text-center" style="padding:20px">
+      <div class="text-sm text-muted mb-8">No measurements recorded yet</div>
+      <button class="btn btn-primary btn-sm" onclick="openLogMeasurementsModal()">Record First Measurements</button>
+    </div>`;
+  }
+
+  // Workout history
+  html += `<div class="section-divider">WORKOUT HISTORY</div>`;
+  
+  if (!allWorkouts.length) {
+    html += `<div class="card text-center" style="padding:24px">
+      <div class="text-sm text-muted">No workouts logged yet.<br>Complete your first workout above!</div>
+    </div>`;
+  } else {
+    html += `<div class="card">`;
+    allWorkouts.slice(0, 20).forEach(w => {
+      const isRun = !!w.distance;
+      html += `<div class="list-item">
+        <div style="width:36px;flex-shrink:0">
+          <div class="badge ${isRun ? 'badge-orange' : 'badge-yellow'}" style="padding:4px 6px;font-size:9px">${isRun ? 'RUN' : 'STR'}</div>
+        </div>
+        <div class="list-item-info">
+          <h4>${w.date} ${isRun ? (w.type === 'intervals' ? '— Intervals' : '— Easy Run') : '— Strength'}</h4>
+          <p>${isRun ? `${w.distance}mi · ${w.duration}min · HR ${w.avgHR || '—'}` : (w.data ? `${w.data.length} exercises` : 'completed')}</p>
+        </div>
+        <button class="btn-icon" onclick="deleteWorkoutLog('${w.id || w.date}')">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // Running log
+  if (db.running_log.length) {
+    html += `<div class="section-divider">RUNNING LOG</div>
+    <div class="card">`;
+    db.running_log.slice(-8).reverse().forEach(r => {
+      html += `<div class="list-item">
+        <div class="list-item-info">
+          <h4>${r.date} — ${r.type === 'intervals' ? 'Intervals' : 'Easy Run'}</h4>
+          <p>${r.distance} mi · ${r.duration} min · Avg HR: ${r.avgHR || '—'} bpm</p>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  // Measurements history
+  if (db.measurements.length > 1) {
+    html += `<div class="section-divider">MEASUREMENT HISTORY</div>
+    <div class="card">`;
+    db.measurements.slice(-6).reverse().forEach(m => {
+      html += `<div class="list-item">
+        <div class="list-item-info">
+          <h4>${m.date}</h4>
+          <p>Weight: ${m.weight}lbs · BF: ${m.bodyFat}% · TI: ${calcTotalInches(m).toFixed(1)}"</p>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PAGE: NUTRITION
+// ═══════════════════════════════════════════════════════════════
+function renderNutrition() {
+  const autoN = calcAutoNutrition();
+  const todayN = getTodayNutritionLog();
+  
+  let html = `<div class="page-header">
+    <div>
+      <div class="page-title">Nutrition</div>
+      <div class="page-subtitle">SLOW-CARB · MEAL PLANNING</div>
+    </div>
+  </div>`;
+
+  // Daily targets
+  html += `<div class="stat-grid mb-12">
+    <div class="stat-box">
+      <div class="stat-value">${db.settings.calorieGoal || autoN.calories}</div>
+      <div class="stat-label">Cal Goal</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${todayN ? Math.min(100, todayN.calories / (db.settings.calorieGoal || autoN.calories) * 100) : 0}%"></div></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" style="color:var(--accent2)">${db.settings.proteinGoal || autoN.protein}</div>
+      <div class="stat-label">Protein Goal (g)</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${todayN ? Math.min(100, todayN.protein / (db.settings.proteinGoal || autoN.protein) * 100) : 0}%;background:var(--accent2)"></div></div>
+    </div>
+  </div>`;
+
+  // Today logged
+  html += `<div class="card mb-12">
+    <div class="card-header mb-8">
+      <div class="card-title">Today Logged</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary btn-sm" onclick="openLogMealModal()">+ Meal</button>
+        <button class="btn btn-secondary btn-sm" onclick="openLogMealModal(true)">+ Quick</button>
+      </div>
+    </div>`;
+  
+  if (todayN && todayN.meals.length > 0) {
+    todayN.meals.forEach((meal, idx) => {
+      html += `<div class="list-item">
+        <div class="list-item-info">
+          <h4>${meal.name || 'Meal'}</h4>
+          <p>${meal.calories || 0} cal · ${meal.protein || 0}g protein · ${meal.carbs || 0}g carbs</p>
+        </div>
+        <button class="btn-icon" onclick="removeTodayMeal(${idx})">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>`;
+    });
+    html += `<hr>
+    <div class="flex-between">
+      <div class="text-sm fw-600">Total</div>
+      <div class="text-sm text-accent mono">${todayN.calories} cal / ${todayN.protein}g prot</div>
+    </div>`;
+  } else {
+    html += `<div class="text-sm text-muted text-center" style="padding:16px 0">No meals logged today</div>`;
+  }
+  html += `</div>`;
+
+  // Slow-carb rules
+  html += `<div class="card mb-12">
+    <div class="card-header mb-8">
+      <div class="card-title">Slow-Carb Rules</div>
+      <span class="badge badge-yellow">Ferriss</span>
+    </div>`;
+  SLOW_CARB.rules.forEach(r => {
+    html += `<div class="text-sm mb-4">✓ ${r}</div>`;
+  });
+  html += `</div>`;
+
+  // Meal database
+  html += `<div class="section-divider">MEAL DATABASE</div>
+  <div class="card mb-12">
+    <div class="card-header mb-8">
+      <div class="card-title">My Meals</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-secondary btn-sm" onclick="navigate('meal-builder')">+ Meal</button>
+        <button class="btn btn-secondary btn-sm" onclick="openImportModal()">Import CSV</button>
+      </div>
+    </div>`;
+  
+  if (!db.meals.length) {
+    html += `<div class="text-sm text-muted text-center" style="padding:16px 0">
+      No meals yet. Add ingredients and build meals, or import your spreadsheet.
+    </div>`;
+  } else {
+    db.meals.forEach(meal => {
+      const macros = calcMealMacros(meal);
+      html += `<div class="list-item">
+        <div class="list-item-info">
+          <h4>${meal.name}</h4>
+          <p>${macros.calories} cal · ${macros.protein}g P · ${macros.carbs}g C · ${macros.fat}g F</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="addMealToLog('${meal.id}')">Add</button>
+      </div>`;
+    });
+  }
+  html += `</div>`;
+
+  // Ingredients
+  html += `<div class="section-divider">INGREDIENT DATABASE</div>
+  <div class="card">
+    <div class="card-header mb-8">
+      <div class="card-title">Ingredients</div>
+      <button class="btn btn-secondary btn-sm" onclick="openAddIngredientModal()">+ Add</button>
+    </div>`;
+  
+  if (!db.ingredients.length) {
+    html += `<div class="text-sm text-muted text-center" style="padding:16px 0">
+      No ingredients yet. Add them manually or import your CSV spreadsheet.
+    </div>`;
+  } else {
+    db.ingredients.slice(0, 10).forEach(ing => {
+      html += `<div class="list-item">
+        <div class="list-item-info">
+          <h4>${ing.name}</h4>
+          <p>${ing.protein}g P · ${ing.carbs}g C · ${ing.fat}g F per ${ing.servingSize || 1} ${ing.servingUnit || 'serving'}</p>
+        </div>
+        <button class="btn-icon" onclick="deleteIngredient('${ing.id}')">
+          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        </button>
+      </div>`;
+    });
+    if (db.ingredients.length > 10) {
+      html += `<div class="text-xs text-muted text-center mt-8">+ ${db.ingredients.length - 10} more ingredients</div>`;
+    }
+  }
+  html += `</div>`;
+
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PAGE: PROGRESS
+// ═══════════════════════════════════════════════════════════════
+function renderProgress() {
+  const measurements = db.measurements;
+  const latest = getLatestMeasurements();
+  const firstM = measurements.length > 1 ? measurements[0] : null;
+  
+  let html = `<div class="page-header">
+    <div>
+      <div class="page-title">Progress</div>
+      <div class="page-subtitle">TRENDS & ANALYTICS</div>
+    </div>
+  </div>`;
+
+  // Body weight chart
+  if (measurements.length > 1) {
+    const weights = measurements.slice(-10).map(m => parseFloat(m.weight) || 0);
+    const maxW = Math.max(...weights);
+    const minW = Math.min(...weights);
+    const range = maxW - minW || 1;
+    
+    html += `<div class="card mb-12">
+      <div class="card-title mb-8">Body Weight Trend</div>
+      <div class="chart-area">`;
+    weights.forEach((w, i) => {
+      const height = ((w - minW) / range * 80 + 10);
+      html += `<div class="chart-bar" style="height:${height}px;background:${i === weights.length-1 ? 'var(--accent)' : 'var(--surface3)'}"></div>`;
+    });
+    html += `</div>
+      <div class="flex-between mt-8">
+        <div class="text-xs text-muted">${measurements[Math.max(0, measurements.length-10)].date}</div>
+        <div class="text-xs text-accent mono">${latest.weight} lbs</div>
+      </div>
+    </div>`;
+  }
+
+  // Key metrics
+  if (latest && firstM) {
+    const wDiff = (parseFloat(latest.weight) - parseFloat(firstM.weight)).toFixed(1);
+    const tiDiff = (calcTotalInches(latest) - calcTotalInches(firstM)).toFixed(1);
+    const bfDiff = (parseFloat(latest.bodyFat || 0) - parseFloat(firstM.bodyFat || 0)).toFixed(1);
+    
+    html += `<div class="card mb-12">
+      <div class="card-title mb-8">Overall Change</div>
+      <div class="stat-grid stat-grid-3">
+        <div class="stat-box">
+          <div class="stat-value" style="color:${parseFloat(wDiff) < 0 ? 'var(--green)' : 'var(--red)'}">${wDiff > 0 ? '+' : ''}${wDiff}</div>
+          <div class="stat-label">lbs</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:${parseFloat(tiDiff) < 0 ? 'var(--green)' : 'var(--accent2)'}">${tiDiff > 0 ? '+' : ''}${tiDiff}"</div>
+          <div class="stat-label">Total Inches</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:${parseFloat(bfDiff) < 0 ? 'var(--green)' : 'var(--red)'}">${bfDiff > 0 ? '+' : ''}${bfDiff}%</div>
+          <div class="stat-label">Body Fat</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Measurement details
+  if (latest) {
+    html += `<div class="card mb-12">
+      <div class="card-title mb-8">Current Measurements</div>
+      <div class="section-divider">Upper Body</div>`;
+    [['Neck', 'neck'], ['Chest', 'chest'], ['Shoulders', 'shoulders'], ['Right Arm', 'rightArm'], ['Left Arm', 'leftArm']].forEach(([label, key]) => {
+      if (latest[key]) {
+        html += `<div class="flex-between" style="padding:6px 0;border-bottom:1px solid var(--border)">
+          <div class="text-sm">${label}</div>
+          <div class="mono text-sm">${latest[key]}"</div>
+        </div>`;
+      }
+    });
+    html += `<div class="section-divider">Core & Lower</div>`;
+    [['Waist', 'waist'], ['Hips', 'hips'], ['Right Thigh', 'rightThigh'], ['Left Thigh', 'leftThigh'], ['Right Calf', 'rightCalf'], ['Left Calf', 'leftCalf']].forEach(([label, key]) => {
+      if (latest[key]) {
+        html += `<div class="flex-between" style="padding:6px 0;border-bottom:1px solid var(--border)">
+          <div class="text-sm">${label}</div>
+          <div class="mono text-sm">${latest[key]}"</div>
+        </div>`;
+      }
+    });
+    html += `<div class="section-divider"></div>
+    <div class="flex-between">
+      <div class="text-sm fw-600">Total Inches</div>
+      <div class="mono text-sm text-accent">${calcTotalInches(latest).toFixed(1)}"</div>
+    </div>
+    </div>`;
+  }
+
+  // Strength progress
+  if (db.workouts.filter(w => w.type === 'strength').length > 0) {
+    html += `<div class="card mb-12">
+      <div class="card-title mb-8">Strength Progress</div>`;
+    G2F.exercises.slice(0, 4).forEach(ex => {
+      const last = getExerciseData(ex.name);
+      if (last) {
+        html += `<div class="list-item">
+          <div class="list-item-info">
+            <h4>${ex.name}</h4>
+            <p>${last.reps} reps</p>
+          </div>
+          <div class="list-item-meta text-accent">${last.weight} lbs</div>
+        </div>`;
+      }
+    });
+    html += `</div>`;
+  }
+
+  // Running progress
+  if (db.running_log.length > 0) {
+    const recentRuns = db.running_log.slice(-8);
+    const avgDist = recentRuns.reduce((a,b) => a + (b.distance||0), 0) / recentRuns.length;
+    html += `<div class="card mb-12">
+      <div class="card-title mb-8">Running Progress</div>
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="stat-value">${recentRuns.length}</div>
+          <div class="stat-label">Recent Runs</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" style="color:var(--accent2)">${avgDist.toFixed(1)}</div>
+          <div class="stat-label">Avg Distance (mi)</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Nutrition compliance
+  if (db.nutrition_log.length > 0) {
+    const recent = db.nutrition_log.slice(-7);
+    const compliant = recent.filter(d => d.compliant).length;
+    html += `<div class="card mb-12">
+      <div class="card-title mb-8">Nutrition Compliance (7 days)</div>
+      <div class="flex-between mb-8">
+        <div style="font-family:var(--display);font-size:36px;color:var(--accent)">${compliant}/7</div>
+        <div class="text-sm text-muted">days on-plan</div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${compliant/7*100}%"></div></div>
+    </div>`;
+  }
+
+  // Export data
+  html += `<div class="card">
+    <div class="card-title mb-8">Data</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary btn-sm" style="flex:1" onclick="exportData()">Export JSON</button>
+      <button class="btn btn-secondary btn-sm" style="flex:1" onclick="importDataPrompt()">Import JSON</button>
+    </div>
+  </div>`;
+
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PAGE: SETTINGS
+// ═══════════════════════════════════════════════════════════════
+function renderSettings() {
+  const s = db.settings;
+  
+  let html = `<div class="page-header">
+    <div>
+      <div class="page-title">Settings</div>
+      <div class="page-subtitle">PROGRAM CONFIGURATION</div>
+    </div>
+  </div>`;
+
+  // Profile
+  html += `<div class="card mb-12">
+    <div class="card-title mb-12">Profile</div>
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-input" value="${s.name || ''}" onchange="updateSetting('name', this.value)" placeholder="Your name">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group">
+        <label class="form-label">Bodyweight (lbs)</label>
+        <input type="number" class="form-input" value="${s.bodyweight || ''}" onchange="updateSetting('bodyweight', parseFloat(this.value))" placeholder="180">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Age</label>
+        <input type="number" class="form-input" value="${s.age || 35}" onchange="updateSetting('age', parseInt(this.value))" placeholder="35">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group">
+        <label class="form-label">Height (inches)</label>
+        <input type="number" class="form-input" value="${s.heightIn || 70}" onchange="updateSetting('heightIn', parseInt(this.value))" placeholder="70">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Body Fat %</label>
+        <input type="number" class="form-input" value="${s.bodyFatPct || 20}" onchange="updateSetting('bodyFatPct', parseFloat(this.value))" placeholder="20">
+      </div>
+    </div>
+  </div>`;
+
+  // Training days
+  const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  html += `<div class="card mb-12">
+    <div class="card-title mb-12">Training Days</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">`;
+  for (let i = 0; i < 7; i++) {
+    const active = s.trainingDays.includes(i);
+    html += `<button class="pill ${active ? 'active' : ''}" onclick="toggleTrainingDay(${i})">${dayNames[i]}</button>`;
+  }
+  html += `</div></div>`;
+
+  // Components
+  html += `<div class="card mb-12">
+    <div class="card-title mb-12">Components</div>`;
+  
+  const components = [
+    { key: 'useStrength', label: 'Strength Training', desc: 'Geek to Freak: 1 set to failure, 5 exercises, 2×/week. Cadence 5/5.' },
+    { key: 'useRunning', label: 'Running', desc: 'MAF low-HR aerobic base building + 1 interval session/week. 3×/week.' },
+    { key: 'useCore', label: 'Core', desc: '6-Minute Abs: Myotatic Crunch, Cat Vomit, Side Plank (Ferriss).' },
+    { key: 'usePosterior', label: 'Posterior Chain', desc: '75 kettlebell swings per session, 2×/week (Ferriss).' },
+    { key: 'useMobility', label: 'Mobility', desc: 'Shoulder, hip, and wrist mobility work. Configurable areas.' },
+    { key: 'useNutrition', label: 'Nutrition Tracking', desc: 'Slow-carb protocol tracking with meal planning and compliance.' },
+  ];
+  
+  components.forEach(c => {
+    html += `<div class="toggle-row">
+      <div class="toggle-info"><h4>${c.label}</h4><p>${c.desc}</p></div>
+      <label class="toggle">
+        <input type="checkbox" ${s[c.key] ? 'checked' : ''} onchange="updateSetting('${c.key}', this.checked); regenerateSchedule()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Running config
+  if (s.useRunning) {
+    html += `<div class="card mb-12">
+      <div class="card-title mb-12">Running Configuration</div>
+      <div class="form-group">
+        <label class="form-label">Plan</label>
+        <select class="form-select" onchange="updateSetting('runningPlan', this.value)">
+          <option value="maf" ${s.runningPlan === 'maf' ? 'selected' : ''}>MAF (180-Age) — Ferriss recommended</option>
+          <option value="basic" ${s.runningPlan === 'basic' ? 'selected' : ''}>Basic HR zones</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="form-group">
+          <label class="form-label">Target HR (bpm)</label>
+          <input type="number" class="form-input" value="${getMAFHR()}" onchange="updateSetting('runningHrZone', parseInt(this.value))" placeholder="${getMAFHR()}">
+          <div class="text-xs text-muted mt-4">Default: 180 − ${s.age || 35} = ${getMAFHR()}</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Start Distance (mi)</label>
+          <input type="number" class="form-input" value="${s.runningStartDistance || 3}" step="0.5" onchange="updateSetting('runningStartDistance', parseFloat(this.value))">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Progression</label>
+        <select class="form-select" onchange="updateSetting('runningProgressionType', this.value)">
+          <option value="distance" ${s.runningProgressionType === 'distance' ? 'selected' : ''}>Distance-based</option>
+          <option value="time" ${s.runningProgressionType === 'time' ? 'selected' : ''}>Time-based</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Weekly Increase (%)</label>
+        <input type="number" class="form-input" value="${s.runningProgressionPct || 10}" onchange="updateSetting('runningProgressionPct', parseInt(this.value))" placeholder="10">
+      </div>
+    </div>`;
+  }
+
+  // Nutrition config
+  html += `<div class="card mb-12">
+    <div class="card-title mb-12">Nutrition</div>
+    <div class="form-group">
+      <label class="form-label">Plan</label>
+      <select class="form-select" onchange="updateSetting('nutritionPlan', this.value)">
+        <option value="slowcarb" ${s.nutritionPlan === 'slowcarb' ? 'selected' : ''}>Slow-Carb Diet (Ferriss)</option>
+        <option value="g2f" ${s.nutritionPlan === 'g2f' ? 'selected' : ''}>Geek to Freak (Ferriss)</option>
+        <option value="custom" ${s.nutritionPlan === 'custom' ? 'selected' : ''}>Custom</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cheat Day</label>
+      <select class="form-select" onchange="updateSetting('cheatDay', parseInt(this.value))">
+        ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d,i) => `<option value="${i}" ${s.cheatDay === i ? 'selected' : ''}>${d}</option>`).join('')}
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group">
+        <label class="form-label">Calorie Goal</label>
+        <input type="number" class="form-input" value="${s.calorieGoal || calcAutoNutrition().calories}" onchange="updateSetting('calorieGoal', parseInt(this.value))">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Protein Goal (g)</label>
+        <input type="number" class="form-input" value="${s.proteinGoal || calcAutoNutrition().protein}" onchange="updateSetting('proteinGoal', parseInt(this.value))">
+      </div>
+    </div>
+    <div class="text-xs text-muted">Auto-calculated: ${calcAutoNutrition().calories} cal / ${calcAutoNutrition().protein}g protein based on your bodyweight</div>
+  </div>`;
+
+  // Mobility areas
+  if (s.useMobility) {
+    html += `<div class="card mb-12">
+      <div class="card-title mb-12">Mobility Areas</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">`;
+    ['shoulders', 'hips', 'wrists', 'ankles', 'thoracic', 'neck'].forEach(area => {
+      const active = s.mobilityAreas.includes(area);
+      html += `<button class="pill ${active ? 'active' : ''}" onclick="toggleMobilityArea('${area}')">${area.charAt(0).toUpperCase() + area.slice(1)}</button>`;
+    });
+    html += `</div></div>`;
+  }
+
+  // Supplements
+  html += `<div class="card mb-12">
+    <div class="card-title mb-8">Ferriss Supplements & Tricks</div>
+    <div class="text-xs text-muted mb-12">Optional additions to your protocol. Toggle what you want to track.</div>`;
+  
+  const supplements = [
+    { key: 'supPolicosanol: supPolicosanol', key2: 'supPolicosanol', label: 'Policosanol', desc: '20–25mg before bed. Ferriss uses for cholesterol management and lipid optimization.' },
+    { key2: 'supALA', label: 'Alpha-Lipoic Acid (ALA)', desc: '100mg with meals on cheat day. Helps direct calories to muscle vs fat by improving glucose disposal.' },
+    { key2: 'supGarlic', label: 'Garlic Extract', desc: 'Anti-inflammatory. Ferriss recommends 200mg of aged garlic extract.' },
+    { key2: 'supGlutamine', label: 'L-Glutamine', desc: '10g before bed. Supports muscle recovery and immune function.' },
+    { key2: 'supCreatine', label: 'Creatine Monohydrate', desc: '5g/day. Increases strength and lean mass. Most studied supplement in existence.' },
+    { key2: 'supCissus', label: 'Cissus Quadrangularis', desc: 'Joint support. Ferriss credits with injury prevention during heavy training.' },
+    { key2: 'supCashews', label: '4 Cashews Before Meals', desc: 'Ferriss trick: eating fat (cashews) before a meal helps reduce glycemic response.' },
+    { key2: 'supAirSquats', label: '90-sec Air Squats + Wall Pushups', desc: 'Before and after meals on cheat day. Drives glucose into muscle rather than fat cells.' },
+  ];
+  
+  supplements.forEach(sup => {
+    html += `<div class="toggle-row">
+      <div class="toggle-info"><h4>${sup.label}</h4><p>${sup.desc}</p></div>
+      <label class="toggle">
+        <input type="checkbox" ${s[sup.key2] ? 'checked' : ''} onchange="updateSetting('${sup.key2}', this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // G2F status
+  html += `<div class="card mb-12">
+    <div class="card-title mb-12">Geek to Freak Status</div>
+    <div class="toggle-row">
+      <div class="toggle-info"><h4>Test Day Completed</h4><p>Mark when you've done your initial weight testing session</p></div>
+      <label class="toggle">
+        <input type="checkbox" ${s.g2fTestDone ? 'checked' : ''} onchange="updateSetting('g2fTestDone', this.checked)">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="form-group mt-12">
+      <label class="form-label">Current Week</label>
+      <input type="number" class="form-input" value="${s.g2fCurrentWeek || 1}" min="1" onchange="updateSetting('g2fCurrentWeek', parseInt(this.value))">
+    </div>
+  </div>`;
+
+  // About
+  html += `<div class="card mb-12">
+    <div class="card-title mb-8">About 4HB Operator</div>
+    <div class="text-sm text-muted">Based on Tim Ferriss' protocols from The 4-Hour Body: Geek to Freak, Slow-Carb Diet, 6-Minute Abs, MAF running, and related methods.</div>
+    <hr>
+    <div class="text-xs text-muted">Data stored locally on your device. Export regularly to back up.</div>
+    <button class="btn btn-danger btn-sm btn-full mt-12" onclick="confirmReset()">Reset All Data</button>
+  </div>`;
+
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════════════════════
+function openModal(html) {
+  document.getElementById('modal-content').innerHTML = `<div class="modal-handle"></div>` + html;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function openLogWeightModal() {
+  const today_bw = db.settings.bodyweight;
+  openModal(`
+    <div class="modal-title">Log Bodyweight</div>
+    <div class="form-group">
+      <label class="form-label">Weight (lbs)</label>
+      <input type="number" class="form-input" id="bw-input" value="${today_bw || ''}" step="0.1" placeholder="180.0" style="font-size:24px;text-align:center">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Time</label>
+      <input type="time" class="form-input" id="bw-time" value="${new Date().toTimeString().slice(0,5)}">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveBodyweight()">Save</button>
+  `);
+}
+
+function saveBodyweight() {
+  const val = parseFloat(document.getElementById('bw-input').value);
+  if (!val) return;
+  db.settings.bodyweight = val;
+  // Also save to measurements if recent
+  const todayM = db.measurements.find(m => m.date === today());
+  if (todayM) { todayM.weight = val; }
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Weight logged ✓');
+}
+
+function openLogMealModal(quick = false) {
+  if (quick) {
+    openModal(`
+      <div class="modal-title">Quick Add Meal</div>
+      <div class="text-xs text-muted mb-12">For restaurant meals or one-off items. No database entry required.</div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <input type="text" class="form-input" id="qm-name" placeholder="e.g. Chipotle chicken bowl">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="form-group">
+          <label class="form-label">Calories</label>
+          <input type="number" class="form-input" id="qm-cal" placeholder="600">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Protein (g)</label>
+          <input type="number" class="form-input" id="qm-prot" placeholder="40">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Carbs (g)</label>
+          <input type="number" class="form-input" id="qm-carbs" placeholder="60">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Fat (g)</label>
+          <input type="number" class="form-input" id="qm-fat" placeholder="20">
+        </div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="saveQuickMeal()">Add to Today's Log</button>
+    `);
+  } else {
+    const mealOptions = db.meals.map(m => {
+      const macros = calcMealMacros(m);
+      return `<div class="list-item" onclick="addMealToLog('${m.id}');closeModalDirect()" style="cursor:pointer">
+        <div class="list-item-info">
+          <h4>${m.name}</h4>
+          <p>${macros.calories} cal · ${macros.protein}g P</p>
+        </div>
+        <div class="list-item-meta text-accent">Add →</div>
+      </div>`;
+    }).join('');
+    
+    openModal(`
+      <div class="modal-title">Add Meal</div>
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchMealTab('from-db', this)">My Meals</button>
+        <button class="tab-btn" onclick="switchMealTab('quick', this)">Quick Add</button>
+      </div>
+      <div id="meal-tab-from-db">
+        ${db.meals.length ? mealOptions : '<div class="text-sm text-muted text-center" style="padding:20px 0">No meals in database yet.<br>Build meals in the Nutrition tab.</div>'}
+      </div>
+      <div id="meal-tab-quick" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <input type="text" class="form-input" id="qm-name" placeholder="e.g. Chipotle chicken bowl">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="form-group"><label class="form-label">Calories</label><input type="number" class="form-input" id="qm-cal" placeholder="600"></div>
+          <div class="form-group"><label class="form-label">Protein (g)</label><input type="number" class="form-input" id="qm-prot" placeholder="40"></div>
+          <div class="form-group"><label class="form-label">Carbs (g)</label><input type="number" class="form-input" id="qm-carbs" placeholder="60"></div>
+          <div class="form-group"><label class="form-label">Fat (g)</label><input type="number" class="form-input" id="qm-fat" placeholder="20"></div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="saveQuickMeal()">Add to Today's Log</button>
+      </div>
+    `);
+  }
+}
+
+function switchMealTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('meal-tab-from-db').style.display = tab === 'from-db' ? 'block' : 'none';
+  document.getElementById('meal-tab-quick').style.display = tab === 'quick' ? 'block' : 'none';
+}
+
+function saveQuickMeal() {
+  const name = document.getElementById('qm-name')?.value || 'Unnamed meal';
+  const cal = parseInt(document.getElementById('qm-cal')?.value) || 0;
+  const prot = parseInt(document.getElementById('qm-prot')?.value) || 0;
+  const carbs = parseInt(document.getElementById('qm-carbs')?.value) || 0;
+  const fat = parseInt(document.getElementById('qm-fat')?.value) || 0;
+  
+  const log = getOrCreateTodayNutrition();
+  log.meals.push({ name, calories: cal, protein: prot, carbs, fat, quick: true, time: new Date().toTimeString().slice(0,5) });
+  log.calories += cal;
+  log.protein += prot;
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Meal logged ✓');
+}
+
+function addMealToLog(mealId) {
+  const meal = getMealById(mealId);
+  if (!meal) return;
+  const macros = calcMealMacros(meal);
+  const log = getOrCreateTodayNutrition();
+  log.meals.push({ name: meal.name, calories: macros.calories, protein: macros.protein, carbs: macros.carbs, fat: macros.fat, mealId, time: new Date().toTimeString().slice(0,5) });
+  log.calories += macros.calories;
+  log.protein += macros.protein;
+  saveDB();
+  refresh();
+  showToast(`${meal.name} added ✓`);
+}
+
+function removeTodayMeal(idx) {
+  const log = getTodayNutritionLog();
+  if (!log) return;
+  const meal = log.meals[idx];
+  log.calories -= meal.calories || 0;
+  log.protein -= meal.protein || 0;
+  log.meals.splice(idx, 1);
+  saveDB();
+  refresh();
+}
+
+function openLogWaterModal() {
+  const log = getOrCreateTodayNutrition();
+  openModal(`
+    <div class="modal-title">Log Water Intake</div>
+    <div class="form-group">
+      <label class="form-label">Water today (oz)</label>
+      <input type="number" class="form-input" id="water-input" value="${log.water || 0}" placeholder="64" style="font-size:24px;text-align:center">
+      <div class="text-xs text-muted mt-4">Ferriss recommends 1.5–2L per day minimum. Goal: 64-80 oz.</div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveWater()">Save</button>
+  `);
+}
+
+function saveWater() {
+  const val = parseInt(document.getElementById('water-input').value) || 0;
+  const log = getOrCreateTodayNutrition();
+  log.water = val;
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Water logged ✓');
+}
+
+function openLogMeasurementsModal() {
+  const latest = getLatestMeasurements() || {};
+  openModal(`
+    <div class="modal-title">Measurements</div>
+    <div class="text-xs text-muted mb-12">Ferriss measurement system. Measure at the same time each week (morning, before eating). Track total inches to see real progress.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group">
+        <label class="form-label">Weight (lbs)</label>
+        <input type="number" class="form-input" id="m-weight" value="${latest.weight || ''}" step="0.1" placeholder="180">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Body Fat %</label>
+        <input type="number" class="form-input" id="m-bf" value="${latest.bodyFat || ''}" step="0.1" placeholder="20">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Neck (in)</label>
+        <input type="number" class="form-input" id="m-neck" value="${latest.neck || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Chest (in)</label>
+        <input type="number" class="form-input" id="m-chest" value="${latest.chest || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Waist (in)</label>
+        <input type="number" class="form-input" id="m-waist" value="${latest.waist || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hips (in)</label>
+        <input type="number" class="form-input" id="m-hips" value="${latest.hips || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Right Arm (in)</label>
+        <input type="number" class="form-input" id="m-rarm" value="${latest.rightArm || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Left Arm (in)</label>
+        <input type="number" class="form-input" id="m-larm" value="${latest.leftArm || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Right Thigh (in)</label>
+        <input type="number" class="form-input" id="m-rthigh" value="${latest.rightThigh || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Left Thigh (in)</label>
+        <input type="number" class="form-input" id="m-lthigh" value="${latest.leftThigh || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Right Calf (in)</label>
+        <input type="number" class="form-input" id="m-rcalf" value="${latest.rightCalf || ''}" step="0.25">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Left Calf (in)</label>
+        <input type="number" class="form-input" id="m-lcalf" value="${latest.leftCalf || ''}" step="0.25">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="form-textarea" id="m-notes" placeholder="Any notes...">${latest.notes || ''}</textarea>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveMeasurements()">Save Measurements</button>
+  `);
+}
+
+function saveMeasurements() {
+  const m = {
+    date: today(),
+    weight: parseFloat(document.getElementById('m-weight').value) || 0,
+    bodyFat: parseFloat(document.getElementById('m-bf').value) || 0,
+    neck: parseFloat(document.getElementById('m-neck').value) || 0,
+    chest: parseFloat(document.getElementById('m-chest').value) || 0,
+    waist: parseFloat(document.getElementById('m-waist').value) || 0,
+    hips: parseFloat(document.getElementById('m-hips').value) || 0,
+    rightArm: parseFloat(document.getElementById('m-rarm').value) || 0,
+    leftArm: parseFloat(document.getElementById('m-larm').value) || 0,
+    rightThigh: parseFloat(document.getElementById('m-rthigh').value) || 0,
+    leftThigh: parseFloat(document.getElementById('m-lthigh').value) || 0,
+    rightCalf: parseFloat(document.getElementById('m-rcalf').value) || 0,
+    leftCalf: parseFloat(document.getElementById('m-lcalf').value) || 0,
+    notes: document.getElementById('m-notes').value,
+  };
+  
+  const existing = db.measurements.findIndex(x => x.date === today());
+  if (existing >= 0) {
+    db.measurements[existing] = m;
+  } else {
+    db.measurements.push(m);
+  }
+  
+  if (m.weight) { db.settings.bodyweight = m.weight; }
+  if (m.bodyFat) { db.settings.bodyFatPct = m.bodyFat; }
+  
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Measurements saved ✓');
+}
+
+function openLogStrengthModal() {
+  const isTestDay = !db.settings.g2fTestDone;
+  let inputs = G2F.exercises.slice(0,4).map((ex, i) => {
+    const last = getExerciseData(ex.name);
+    return `<div class="card mb-8" style="background:var(--surface2)">
+      <div class="fw-600 mb-8">${ex.name}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div class="form-group">
+          <label class="form-label">Weight (lbs)</label>
+          <input type="number" class="form-input" id="str-w-${i}" value="${last ? last.weight : ''}" placeholder="${ex.startWeight.male}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reps to failure</label>
+          <input type="number" class="form-input" id="str-r-${i}" value="${last ? last.reps : ''}" placeholder="8">
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  
+  openModal(`
+    <div class="modal-title">Log Strength Session</div>
+    <div class="text-xs text-muted mb-12">${isTestDay ? 'TEST DAY: Record the weight where you fail at 5-10 reps.' : 'Record your 1 set to failure for each exercise. Use 5 sec up / 5 sec down cadence.'}</div>
+    ${inputs}
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="form-textarea" id="str-notes" placeholder="How did it feel?"></textarea>
+    </div>
+    ${isTestDay ? `<label class="toggle-row">
+      <div class="toggle-info"><h4>Mark test day complete</h4></div>
+      <label class="toggle"><input type="checkbox" id="str-testdone" checked><span class="toggle-slider"></span></label>
+    </label>` : ''}
+    <button class="btn btn-primary btn-full mt-12" onclick="saveStrengthSession()">Save Session</button>
+  `);
+}
+
+function saveStrengthSession() {
+  const data = G2F.exercises.slice(0,4).map((ex, i) => ({
+    name: ex.name,
+    weight: parseFloat(document.getElementById(`str-w-${i}`)?.value) || 0,
+    reps: parseInt(document.getElementById(`str-r-${i}`)?.value) || 0,
+  }));
+  
+  const testDoneEl = document.getElementById('str-testdone');
+  if (testDoneEl && testDoneEl.checked) {
+    db.settings.g2fTestDone = true;
+  }
+  
+  db.workouts.push({
+    id: Date.now().toString(),
+    date: today(),
+    type: 'strength',
+    data,
+    notes: document.getElementById('str-notes')?.value || '',
+    time: new Date().toTimeString().slice(0,5),
+    completed: true,
+  });
+  
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Strength session logged ✓');
+}
+
+function openLogRunModal() {
+  const dayData = getTodaySchedule();
+  const runType = dayData.runType || 'easy';
+  openModal(`
+    <div class="modal-title">Log Run</div>
+    <div class="form-group">
+      <label class="form-label">Run Type</label>
+      <select class="form-select" id="run-type">
+        <option value="easy" ${runType === 'easy' ? 'selected' : ''}>Easy Aerobic (Low HR)</option>
+        <option value="easy2" ${runType === 'easy2' ? 'selected' : ''}>Easy Aerobic #2</option>
+        <option value="intervals" ${runType === 'intervals' ? 'selected' : ''}>Intervals</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group">
+        <label class="form-label">Distance (miles)</label>
+        <input type="number" class="form-input" id="run-dist" step="0.1" placeholder="${getCurrentRunDistance()}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Duration (min)</label>
+        <input type="number" class="form-input" id="run-dur" placeholder="45">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Avg HR (bpm)</label>
+        <input type="number" class="form-input" id="run-hr" placeholder="${getMAFHR()}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Max HR (bpm)</label>
+        <input type="number" class="form-input" id="run-maxhr">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="form-textarea" id="run-notes" placeholder="How did it feel? Conditions?"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveRunSession()">Save Run</button>
+  `);
+}
+
+function saveRunSession() {
+  const run = {
+    id: Date.now().toString(),
+    date: today(),
+    type: document.getElementById('run-type').value,
+    distance: parseFloat(document.getElementById('run-dist').value) || 0,
+    duration: parseInt(document.getElementById('run-dur').value) || 0,
+    avgHR: parseInt(document.getElementById('run-hr').value) || 0,
+    maxHR: parseInt(document.getElementById('run-maxhr').value) || 0,
+    notes: document.getElementById('run-notes').value,
+    time: new Date().toTimeString().slice(0,5),
+  };
+  db.running_log.push(run);
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Run logged ✓');
+}
+
+function openLogSwingsModal() {
+  openModal(`
+    <div class="modal-title">Log Kettlebell Swings</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group">
+        <label class="form-label">Total Reps</label>
+        <input type="number" class="form-input" id="kb-reps" value="75" placeholder="75">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Weight (lbs)</label>
+        <input type="number" class="form-input" id="kb-weight" value="35" placeholder="35">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sets × Reps (e.g. 5x15)</label>
+      <input type="text" class="form-input" id="kb-sets" value="5x15" placeholder="5x15">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveSwings()">Save Swings</button>
+  `);
+}
+
+function saveSwings() {
+  db.workouts.push({
+    id: Date.now().toString(),
+    date: today(),
+    type: 'posterior',
+    data: [{
+      name: 'Kettlebell Swings',
+      reps: parseInt(document.getElementById('kb-reps').value) || 75,
+      weight: parseInt(document.getElementById('kb-weight').value) || 35,
+      sets: document.getElementById('kb-sets').value || '5x15',
+    }],
+    completed: true,
+    time: new Date().toTimeString().slice(0,5),
+  });
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Swings logged ✓');
+}
+
+function openLogSleepModal() {
+  const last = db.sleep_log.length ? db.sleep_log[db.sleep_log.length - 1] : null;
+  openModal(`
+    <div class="modal-title">Log Sleep</div>
+    <div class="form-group">
+      <label class="form-label">Hours slept</label>
+      <input type="number" class="form-input" id="sleep-hours" value="${last ? last.hours : ''}" step="0.5" placeholder="8" style="font-size:24px;text-align:center">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Quality (1-5)</label>
+      <input type="range" id="sleep-quality" min="1" max="5" value="${last ? last.quality : 3}" style="width:100%">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="form-textarea" id="sleep-notes" placeholder="Anything notable?"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveSleep()">Save</button>
+  `);
+}
+
+function saveSleep() {
+  db.sleep_log.push({
+    date: today(),
+    hours: parseFloat(document.getElementById('sleep-hours').value) || 0,
+    quality: parseInt(document.getElementById('sleep-quality').value) || 3,
+    notes: document.getElementById('sleep-notes').value,
+    time: new Date().toTimeString().slice(0,5),
+  });
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Sleep logged ✓');
+}
+
+function openAddIngredientModal() {
+  openModal(`
+    <div class="modal-title">Add Ingredient</div>
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-input" id="ing-name" placeholder="e.g. Chicken Breast (Costco)">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group">
+        <label class="form-label">Serving Size</label>
+        <input type="number" class="form-input" id="ing-ss" placeholder="4" step="0.5">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Unit</label>
+        <input type="text" class="form-input" id="ing-unit" placeholder="oz">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Protein (g)</label>
+        <input type="number" class="form-input" id="ing-prot" placeholder="25" step="0.1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Carbs (g)</label>
+        <input type="number" class="form-input" id="ing-carbs" placeholder="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fat (g)</label>
+        <input type="number" class="form-input" id="ing-fat" placeholder="3" step="0.1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sodium (mg)</label>
+        <input type="number" class="form-input" id="ing-sodium" placeholder="60">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fiber (g)</label>
+        <input type="number" class="form-input" id="ing-fiber" placeholder="0" step="0.1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Unit Price ($)</label>
+        <input type="number" class="form-input" id="ing-price" placeholder="0.00" step="0.01">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Store</label>
+      <input type="text" class="form-input" id="ing-store" placeholder="Costco, Trader Joe's, etc.">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveIngredient()">Add Ingredient</button>
+  `);
+}
+
+function saveIngredient() {
+  const ing = {
+    id: Date.now().toString(),
+    name: document.getElementById('ing-name').value.trim(),
+    servingSize: parseFloat(document.getElementById('ing-ss').value) || 1,
+    servingUnit: document.getElementById('ing-unit').value.trim() || 'serving',
+    protein: parseFloat(document.getElementById('ing-prot').value) || 0,
+    carbs: parseFloat(document.getElementById('ing-carbs').value) || 0,
+    fat: parseFloat(document.getElementById('ing-fat').value) || 0,
+    sodium: parseFloat(document.getElementById('ing-sodium').value) || 0,
+    fiber: parseFloat(document.getElementById('ing-fiber').value) || 0,
+    unitPrice: parseFloat(document.getElementById('ing-price').value) || 0,
+    store: document.getElementById('ing-store').value.trim(),
+  };
+  if (!ing.name) return;
+  db.ingredients.push(ing);
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast('Ingredient added ✓');
+}
+
+function openImportModal() {
+  openModal(`
+    <div class="modal-title">Import CSV</div>
+    <div class="text-sm text-muted mb-12">Paste your CSV data below. Expected columns (in order):<br>
+    <code style="color:var(--accent3);font-size:11px">name, store, unitPrice, servings, protein, carbs, sugars, fiber, fat, satFat, sodium, servingUnit, servingSize</code></div>
+    <div class="form-group">
+      <label class="form-label">CSV Data (paste from spreadsheet)</label>
+      <textarea class="form-textarea" id="csv-data" style="min-height:150px;font-family:var(--mono);font-size:11px" placeholder="Chicken Breast,Costco,0.50,4,25,0,0,0,3,1,60,oz,4&#10;Black Beans,Trader Joe's,0.25,0.5,7,20,0,7,0.5,0,400,cup,0.5"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="importCSV()">Import</button>
+    <div class="text-xs text-muted mt-8">Or export your existing data:</div>
+    <button class="btn btn-secondary btn-sm btn-full mt-8" onclick="exportIngredients()">Export Ingredients CSV</button>
+  `);
+}
+
+function importCSV() {
+  const raw = document.getElementById('csv-data').value.trim();
+  if (!raw) return;
+  const lines = raw.split('\n').filter(l => l.trim());
+  let count = 0;
+  lines.forEach(line => {
+    const cols = line.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+    if (cols.length < 5) return;
+    const [name, store, unitPrice, servings, protein, carbs, sugars, fiber, fat, satFat, sodium, servingUnit, servingSize] = cols;
+    if (!name) return;
+    db.ingredients.push({
+      id: Date.now().toString() + Math.random().toString(36).slice(2,5),
+      name, store,
+      unitPrice: parseFloat(unitPrice) || 0,
+      servingSize: parseFloat(servingSize) || 1,
+      servingUnit: servingUnit || 'serving',
+      protein: parseFloat(protein) || 0,
+      carbs: parseFloat(carbs) || 0,
+      sugars: parseFloat(sugars) || 0,
+      fiber: parseFloat(fiber) || 0,
+      fat: parseFloat(fat) || 0,
+      satFat: parseFloat(satFat) || 0,
+      sodium: parseFloat(sodium) || 0,
+    });
+    count++;
+  });
+  saveDB();
+  closeModalDirect();
+  navigate('nutrition');
+  showToast(`Imported ${count} ingredients ✓`);
+}
+
+function exportIngredients() {
+  const header = 'name,store,unitPrice,servings,protein,carbs,sugars,fiber,fat,satFat,sodium,servingUnit,servingSize\n';
+  const rows = db.ingredients.map(i => [i.name,i.store,i.unitPrice,i.servings||1,i.protein,i.carbs,i.sugars||0,i.fiber||0,i.fat,i.satFat||0,i.sodium,i.servingUnit,i.servingSize].join(',')).join('\n');
+  const blob = new Blob([header + rows], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '4hb-ingredients.csv';
+  a.click();
+}
+
+function openQuickLogModal() {
+  openModal(`
+    <div class="modal-title">Quick Log</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-secondary btn-full" onclick="closeModalDirect();openLogWeightModal()">⚖️ Log Bodyweight</button>
+      <button class="btn btn-secondary btn-full" onclick="closeModalDirect();openLogMealModal()">🍽️ Log Meal</button>
+      <button class="btn btn-secondary btn-full" onclick="closeModalDirect();openLogRunModal()">🏃 Log Run</button>
+      <button class="btn btn-secondary btn-full" onclick="closeModalDirect();openLogStrengthModal()">💪 Log Strength</button>
+      <button class="btn btn-secondary btn-full" onclick="closeModalDirect();openLogMeasurementsModal()">📏 Log Measurements</button>
+      <button class="btn btn-secondary btn-full" onclick="closeModalDirect();openLogSleepModal()">😴 Log Sleep</button>
+    </div>
+  `);
+}
+
+function markComponentDone(component) {
+  showToast(`${component.charAt(0).toUpperCase() + component.slice(1)} completed ✓`);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SETTINGS ACTIONS
+// ═══════════════════════════════════════════════════════════════
+function updateSetting(key, value) {
+  db.settings[key] = value;
+  saveDB();
+}
+
+function toggleTrainingDay(day) {
+  const days = db.settings.trainingDays;
+  const idx = days.indexOf(day);
+  if (idx >= 0) {
+    days.splice(idx, 1);
+  } else {
+    days.push(day);
+    days.sort((a,b) => a-b);
+  }
+  saveDB();
+  regenerateSchedule();
+  refresh();
+}
+
+function toggleMobilityArea(area) {
+  const areas = db.settings.mobilityAreas;
+  const idx = areas.indexOf(area);
+  if (idx >= 0) {
+    areas.splice(idx, 1);
+  } else {
+    areas.push(area);
+  }
+  saveDB();
+  refresh();
+}
+
+function regenerateSchedule() {
+  const t = today();
+  const weekStart = getWeekStart(t);
+  db.weekly_plan = generateWeeklySchedule(weekStart);
+  db.currentWeek = weekStart;
+  saveDB();
+}
+
+function deleteIngredient(id) {
+  db.ingredients = db.ingredients.filter(i => i.id !== id);
+  saveDB();
+  refresh();
+}
+
+function deleteWorkoutLog(id) {
+  db.workouts = db.workouts.filter(w => w.id !== id);
+  saveDB();
+  refresh();
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `4hb-backup-${today()}.json`;
+  a.click();
+}
+
+function importDataPrompt() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        db = { ...DEFAULT_STATE, ...data, settings: { ...DEFAULT_SETTINGS, ...data.settings } };
+        saveDB();
+        refresh();
+        showToast('Data imported ✓');
+      } catch(err) {
+        showToast('Import failed — invalid JSON');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function confirmReset() {
+  if (confirm('Reset ALL data? This cannot be undone.')) {
+    localStorage.removeItem(DB_KEY);
+    db = { ...DEFAULT_STATE, settings: { ...DEFAULT_SETTINGS } };
+    saveDB();
+    refresh();
+    showToast('Data reset');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════════════
+let currentPage = 'today';
+
+function navigate(page) {
+  currentPage = page;
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.page === page);
+  });
+  refresh();
+  document.getElementById('main-content').scrollTop = 0;
+}
+
+function refresh() {
+  const content = document.getElementById('main-content');
+  switch(currentPage) {
+    case 'today': content.innerHTML = renderToday(); break;
+    case 'log': content.innerHTML = renderLog(); break;
+    case 'nutrition': content.innerHTML = renderNutrition(); break;
+    case 'progress': content.innerHTML = renderProgress(); break;
+    case 'settings': content.innerHTML = renderSettings(); break;
+    default: content.innerHTML = renderToday();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════════════
+function showToast(msg) {
+  const existing = document.getElementById('toast');
+  if (existing) existing.remove();
+  const t = document.createElement('div');
+  t.id = 'toast';
+  t.textContent = msg;
+  t.style.cssText = `
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 300;
+    animation: toastIn 0.2s ease;
+    white-space: nowrap;
+  `;
+  const style = document.createElement('style');
+  style.textContent = `@keyframes toastIn { from { opacity:0;transform:translateX(-50%) translateY(10px); } to { opacity:1;transform:translateX(-50%) translateY(0); } }`;
+  document.head.appendChild(style);
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════════════════════
+function showOnboarding() {
+  openModal(`
+    <div class="modal-title">Welcome to 4HB Operator</div>
+    <div class="text-sm text-muted mb-16">Tim Ferriss' 4-Hour Body protocols, all in one place. Let's get you set up in 60 seconds.</div>
+    
+    <div class="form-group">
+      <label class="form-label">Your Name</label>
+      <input type="text" class="form-input" id="ob-name" placeholder="First name">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="form-group">
+        <label class="form-label">Current Weight (lbs)</label>
+        <input type="number" class="form-input" id="ob-weight" placeholder="180">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Age</label>
+        <input type="number" class="form-input" id="ob-age" placeholder="35">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Primary Goal</label>
+      <select class="form-select" id="ob-goal">
+        <option value="recomp">Body Recomposition (lose fat + gain muscle)</option>
+        <option value="bulk">Maximum Muscle Gain (Geek to Freak)</option>
+        <option value="cut">Fat Loss Priority</option>
+        <option value="performance">Endurance + Performance</option>
+      </select>
+    </div>
+    
+    <div class="section-divider">INCLUDE IN PROGRAM</div>
+    <div class="toggle-row">
+      <div class="toggle-info"><h4>Strength Training</h4><p>Geek to Freak protocol</p></div>
+      <label class="toggle"><input type="checkbox" id="ob-str" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info"><h4>Running</h4><p>MAF aerobic base building</p></div>
+      <label class="toggle"><input type="checkbox" id="ob-run" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info"><h4>Core Work</h4><p>6-Minute Abs</p></div>
+      <label class="toggle"><input type="checkbox" id="ob-core" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info"><h4>Kettlebell Swings</h4><p>Posterior chain</p></div>
+      <label class="toggle"><input type="checkbox" id="ob-kb" checked><span class="toggle-slider"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info"><h4>Mobility Work</h4><p>Shoulders, hips, wrists</p></div>
+      <label class="toggle"><input type="checkbox" id="ob-mob" checked><span class="toggle-slider"></span></label>
+    </div>
+    
+    <button class="btn btn-primary btn-full mt-16" onclick="finishOnboarding()" style="font-size:16px;padding:14px">
+      Build My Program →
+    </button>
+  `);
+}
+
+function finishOnboarding() {
+  db.settings.name = document.getElementById('ob-name').value.trim();
+  db.settings.bodyweight = parseFloat(document.getElementById('ob-weight').value) || 180;
+  db.settings.age = parseInt(document.getElementById('ob-age').value) || 35;
+  db.settings.useStrength = document.getElementById('ob-str').checked;
+  db.settings.useRunning = document.getElementById('ob-run').checked;
+  db.settings.useCore = document.getElementById('ob-core').checked;
+  db.settings.usePosterior = document.getElementById('ob-kb').checked;
+  db.settings.useMobility = document.getElementById('ob-mob').checked;
+  db.settings.calorieGoal = calcAutoNutrition().calories;
+  db.settings.proteinGoal = calcAutoNutrition().protein;
+  db.onboarded = true;
+  
+  regenerateSchedule();
+  saveDB();
+  closeModalDirect();
+  refresh();
+  showToast(`Program built! Time to train, ${db.settings.name || 'Operator'}.`);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // Regenerate schedule if new week
+  const weekStart = getWeekStart(today());
+  if (db.currentWeek !== weekStart) {
+    regenerateSchedule();
+  }
+  
+  refresh();
+  
+  // Show onboarding if first time
+  if (!db.onboarded) {
+    setTimeout(showOnboarding, 400);
+  }
+  
+  // Handle back gesture on modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModalDirect();
+  });
+});
+
+// Service worker for PWA
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'v1';
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    });
+  `;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+</script>
+</body>
+</html>
